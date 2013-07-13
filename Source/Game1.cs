@@ -1,12 +1,13 @@
-#region Using Statements
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Input;
-using 
+using ToastBuddyLib;
+using ResolutionBuddy;
+using HadoukInput;
+using FontBuddyLib;
 
-#endregion
 namespace ToastBuddyLibExample.Windows
 {
 	/// <summary>
@@ -16,13 +17,35 @@ namespace ToastBuddyLibExample.Windows
 	{
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
-		MessageDisplayComponent m_Messages;
+	
+		ToastBuddy m_Messages;
+
+		private InputState m_Input = new InputState();
+		private ControllerWrapper _controller;
+
+		FontBuddy InstructionFont;
 
 		public Game1()
 		{
 			graphics = new GraphicsDeviceManager(this);
+			graphics.SupportedOrientations = DisplayOrientation.Default;
+			Resolution.Init(ref graphics);
 			Content.RootDirectory = "Content";
 			graphics.IsFullScreen = true;
+
+			Resolution.SetDesiredResolution(1024, 768);
+			Resolution.SetScreenResolution(1024, 768, false);
+
+			m_Messages = new ToastBuddy(this, "ArialBlack24", UpperRight, Resolution.TransformationMatrix);
+			Components.Add(m_Messages);
+
+			_controller = new ControllerWrapper(PlayerIndex.One);
+			_controller.UseKeyboard = true;
+		}
+
+		public Vector2 UpperRight()
+		{
+			return new Vector2(Resolution.TitleSafeArea.Right, Resolution.TitleSafeArea.Top);
 		}
 
 		/// <summary>
@@ -35,7 +58,6 @@ namespace ToastBuddyLibExample.Windows
 		{
 			// TODO: Add your initialization logic here
 			base.Initialize();
-				
 		}
 
 		/// <summary>
@@ -47,7 +69,8 @@ namespace ToastBuddyLibExample.Windows
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
-			//TODO: use this.Content to load your game content here 
+			InstructionFont = new FontBuddy();
+			InstructionFont.Font = Content.Load<SpriteFont>("ArialBlack24");
 		}
 
 		/// <summary>
@@ -58,21 +81,30 @@ namespace ToastBuddyLibExample.Windows
 		protected override void Update(GameTime gameTime)
 		{
 			// For Mobile devices, this logic will close the Game when the Back button is pressed
-			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+			if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed) ||
+			    (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Escape)))
 			{
 				Exit();
 			}
-			// TODO: Add your update logic here
 
-			//update input
+			//Update the input
+			m_Input.Update();
+			_controller.Update(m_Input);
 
-			//update resolution
+			//Get the toast message component
+			IServiceProvider services = Services;
+			IMessageDisplay messageDisplay = (IMessageDisplay)services.GetService(typeof(IMessageDisplay));
 
 			//check for button presses
-
-//			//Save the high scores in the highscorebuddy
-//			IServiceProvider services = ScreenManager.Game.Services;
-//			IMessageDisplay messageDisplay = (IMessageDisplay)services.GetService(typeof(IMessageDisplay));
+			for (EKeystroke i = 0; i < (EKeystroke.RTrigger + 1); i++)
+			{
+				//if this button state changed, pop up a message
+				if (_controller.KeystrokePress[(int)i])
+				{
+					//pop up a message
+					messageDisplay.ShowFormattedMessage("Pressed {0}", i.ToString());
+				}
+			}
 
 			base.Update(gameTime);
 		}
@@ -85,7 +117,20 @@ namespace ToastBuddyLibExample.Windows
 		{
 			graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
+			Resolution.ResetViewport();
+
+			spriteBatch.Begin();
+
 			//TODO: Add your drawing code here
+			InstructionFont.Write("Press any button on the controller to pop up messages",
+			                      new Vector2(Resolution.TitleSafeArea.Left, Resolution.TitleSafeArea.Top),
+			                      Justify.Left,
+			                      0.75f,
+			                      Color.White,
+			                      spriteBatch,
+			                      0.0);
+
+			spriteBatch.End();
 
 			base.Draw(gameTime);
 		}
