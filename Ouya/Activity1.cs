@@ -14,7 +14,7 @@ namespace ToastBuddyLibExample.Ouya
 	           Theme = "@style/Theme.Splash",
                 AlwaysRetainTaskState=true,
 	           LaunchMode=Android.Content.PM.LaunchMode.SingleInstance,
-	           ScreenOrientation = ScreenOrientation.Landscape,
+	           ScreenOrientation = ScreenOrientation.SensorLandscape,
 	           ConfigurationChanges = Android.Content.PM.ConfigChanges.Orientation | 
 	                                  Android.Content.PM.ConfigChanges.KeyboardHidden | 
 	                                  Android.Content.PM.ConfigChanges.Keyboard)]

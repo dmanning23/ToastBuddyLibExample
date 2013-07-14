@@ -28,7 +28,7 @@ namespace ToastBuddyLibExample
 		public Game1()
 		{
 			graphics = new GraphicsDeviceManager(this);
-			graphics.SupportedOrientations = DisplayOrientation.Default;
+			graphics.SupportedOrientations = DisplayOrientation.LandscapeLeft;
 			Resolution.Init(ref graphics);
 			Content.RootDirectory = "Content";
 
@@ -116,7 +116,7 @@ namespace ToastBuddyLibExample
 		{
 			graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-			Resolution.ResetViewport();
+			//Resolution.ResetViewport();
 
 			spriteBatch.Begin();
 
