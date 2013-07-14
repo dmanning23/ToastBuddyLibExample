@@ -8,7 +8,7 @@ using ResolutionBuddy;
 using HadoukInput;
 using FontBuddyLib;
 
-namespace ToastBuddyLibExample.Windows
+namespace ToastBuddyLibExample
 {
 	/// <summary>
 	/// This is the main type for your game
@@ -31,10 +31,9 @@ namespace ToastBuddyLibExample.Windows
 			graphics.SupportedOrientations = DisplayOrientation.Default;
 			Resolution.Init(ref graphics);
 			Content.RootDirectory = "Content";
-			graphics.IsFullScreen = true;
 
-			Resolution.SetDesiredResolution(1024, 768);
-			Resolution.SetScreenResolution(1024, 768, false);
+			Resolution.SetDesiredResolution(1280, 720);
+			Resolution.SetScreenResolution(1280, 720, true);
 
 			m_Messages = new ToastBuddy(this, "ArialBlack24", UpperRight, Resolution.TransformationMatrix);
 			Components.Add(m_Messages);
@@ -136,4 +135,3 @@ namespace ToastBuddyLibExample.Windows
 		}
 	}
 }
-
