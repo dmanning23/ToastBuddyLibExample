@@ -116,7 +116,9 @@ namespace ToastBuddyLibExample
 		{
 			graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-			//Resolution.ResetViewport();
+			#if WINDOWS
+			Resolution.ResetViewport();
+			#endif
 
 			spriteBatch.Begin();
 
