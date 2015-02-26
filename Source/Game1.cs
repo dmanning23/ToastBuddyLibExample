@@ -35,7 +35,8 @@ namespace ToastBuddyLibExample
 			Resolution.SetDesiredResolution(1280, 720);
 			Resolution.SetScreenResolution(1280, 720, true);
 
-			m_Messages = new ToastBuddy(this, "ArialBlack24", UpperRight, Resolution.TransformationMatrix);
+			m_Messages = new ToastBuddy(this, "ArialBlack48", UpperRight, Resolution.TransformationMatrix, Justify.Center);
+			m_Messages.ShowTime = TimeSpan.FromSeconds(1.0);
 			Components.Add(m_Messages);
 
 			_controller = new ControllerWrapper(PlayerIndex.One);
@@ -44,19 +45,7 @@ namespace ToastBuddyLibExample
 
 		public Vector2 UpperRight()
 		{
-			return new Vector2(Resolution.TitleSafeArea.Right, Resolution.TitleSafeArea.Top);
-		}
-
-		/// <summary>
-		/// Allows the game to perform any initialization it needs to before starting to run.
-		/// This is where it can query for any required services and load any non-graphic
-		/// related content.  Calling base.Initialize will enumerate through any components
-		/// and initialize them as well.
-		/// </summary>
-		protected override void Initialize()
-		{
-			// TODO: Add your initialization logic here
-			base.Initialize();
+			return new Vector2(Resolution.TitleSafeArea.Center.X, Resolution.TitleSafeArea.Top);
 		}
 
 		/// <summary>
@@ -95,7 +84,7 @@ namespace ToastBuddyLibExample
 			IMessageDisplay messageDisplay = (IMessageDisplay)services.GetService(typeof(IMessageDisplay));
 
 			//check for button presses
-			for (EKeystroke i = 0; i < (EKeystroke.RTrigger + 1); i++)
+			for (EKeystroke i = 0; i < EKeystroke.Neutral; i++)
 			{
 				//if this button state changed, pop up a message
 				if (_controller.CheckKeystroke(i))
@@ -123,7 +112,7 @@ namespace ToastBuddyLibExample
 			spriteBatch.Begin();
 
 			//TODO: Add your drawing code here
-			InstructionFont.Write("Press any button on the controller to pop up messages",
+			InstructionFont.Write("Press any direction on the controller to pop up messages",
 			                      new Vector2(Resolution.TitleSafeArea.Left, Resolution.TitleSafeArea.Top),
 			                      Justify.Left,
 			                      0.75f,
