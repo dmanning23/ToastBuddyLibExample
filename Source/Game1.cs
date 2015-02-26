@@ -98,7 +98,7 @@ namespace ToastBuddyLibExample
 			for (EKeystroke i = 0; i < (EKeystroke.RTrigger + 1); i++)
 			{
 				//if this button state changed, pop up a message
-				if (_controller.KeystrokePress[(int)i])
+				if (_controller.CheckKeystroke(i))
 				{
 					//pop up a message
 					messageDisplay.ShowFormattedMessage("Pressed {0}", i.ToString());
