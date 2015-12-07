@@ -40,7 +40,7 @@ namespace ToastBuddyLibExample
 
 			m_Messages = new ToastBuddy(this, "ArialBlack48", UpperRight, Resolution.TransformationMatrix, Justify.Right);
 			m_Messages.ShowTime = TimeSpan.FromSeconds(1.0);
-			Components.Add(m_Messages);
+			//Components.Add(m_Messages);
 
 			_controller = new ControllerWrapper(PlayerIndex.One);
 			_controller.UseKeyboard = true;
@@ -86,7 +86,7 @@ namespace ToastBuddyLibExample
 
 			//Get the toast message component
 			IServiceProvider services = Services;
-			IMessageDisplay messageDisplay = (IMessageDisplay)services.GetService(typeof(IMessageDisplay));
+			var messageDisplay = (IToastBuddy)services.GetService(typeof(IToastBuddy));
 
 			//check for button presses
 			for (EKeystroke i = 0; i < EKeystroke.Neutral; i++)
