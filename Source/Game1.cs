@@ -7,6 +7,7 @@ using ToastBuddyLib;
 using ResolutionBuddy;
 using HadoukInput;
 using FontBuddyLib;
+using GameTimer;
 
 namespace ToastBuddyLibExample
 {
@@ -23,29 +24,32 @@ namespace ToastBuddyLibExample
 		private InputState m_Input = new InputState();
 		private ControllerWrapper _controller;
 
+		private GameClock _clock;
+
 		FontBuddy InstructionFont;
 
 		public Game1()
 		{
 			graphics = new GraphicsDeviceManager(this);
 			graphics.SupportedOrientations = DisplayOrientation.LandscapeLeft;
-			Resolution.Init(ref graphics);
+			Resolution.Init(graphics);
 			Content.RootDirectory = "Content";
 
 			Resolution.SetDesiredResolution(1280, 720);
 			Resolution.SetScreenResolution(1280, 720, true);
 
-			m_Messages = new ToastBuddy(this, "ArialBlack48", UpperRight, Resolution.TransformationMatrix, Justify.Center);
+			m_Messages = new ToastBuddy(this, "ArialBlack48", UpperRight, Resolution.TransformationMatrix, Justify.Right);
 			m_Messages.ShowTime = TimeSpan.FromSeconds(1.0);
 			Components.Add(m_Messages);
 
 			_controller = new ControllerWrapper(PlayerIndex.One);
 			_controller.UseKeyboard = true;
-		}
+			_clock = new GameClock();
+        }
 
 		public Vector2 UpperRight()
 		{
-			return new Vector2(Resolution.TitleSafeArea.Center.X, Resolution.TitleSafeArea.Top);
+			return new Vector2(Resolution.TitleSafeArea.Right, Resolution.TitleSafeArea.Top);
 		}
 
 		/// <summary>
@@ -76,7 +80,8 @@ namespace ToastBuddyLibExample
 			}
 
 			//Update the input
-			m_Input.Update();
+			_clock.Update(gameTime);
+            m_Input.Update();
 			_controller.Update(m_Input);
 
 			//Get the toast message component
@@ -90,7 +95,7 @@ namespace ToastBuddyLibExample
 				if (_controller.CheckKeystroke(i))
 				{
 					//pop up a message
-					messageDisplay.ShowFormattedMessage("Pressed {0}", i.ToString());
+					messageDisplay.ShowFormattedMessage("Pressed {0}", Color.Yellow, i.ToString());
 				}
 			}
 
@@ -118,7 +123,7 @@ namespace ToastBuddyLibExample
 			                      0.75f,
 			                      Color.White,
 			                      spriteBatch,
-			                      0.0);
+								  _clock);
 
 			spriteBatch.End();
 

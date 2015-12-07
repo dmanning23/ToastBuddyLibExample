@@ -6,7 +6,7 @@
 	url = git@github.com:dmanning23/ouya-csharp.git
 [submodule "externals/HadoukInput"]
 	path = externals/HadoukInput
-	url = git@github
+	url = git@github.com:dmanning23/HadoukInput.git
 [submodule "externals/ResolutionBuddy"]
 	path = externals/ResolutionBuddy
 	url = git@github.com:dmanning23/ResolutionBuddy.git
@@ -28,3 +28,6 @@
 [submodule "externals/Filename"]
 	path = externals/Filename
 	url = git@github.com:dmanning23/Filename.git
+[submodule "externals/XmlBuddy"]
+	path = externals/XmlBuddy
+	url = git@github.com:dmanning23/XmlBuddy.git
