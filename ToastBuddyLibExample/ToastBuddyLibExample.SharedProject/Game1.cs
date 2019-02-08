@@ -1,13 +1,12 @@
-using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Storage;
-using Microsoft.Xna.Framework.Input;
-using ToastBuddyLib;
-using ResolutionBuddy;
-using HadoukInput;
 using FontBuddyLib;
 using GameTimer;
+using HadoukInput;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using ResolutionBuddy;
+using System;
+using ToastBuddyLib;
 
 namespace ToastBuddyLibExample
 {
@@ -32,15 +31,12 @@ namespace ToastBuddyLibExample
 		{
 			graphics = new GraphicsDeviceManager(this);
 			graphics.SupportedOrientations = DisplayOrientation.LandscapeLeft;
-			Resolution.Init(graphics);
 			Content.RootDirectory = "Content";
 
-			Resolution.SetDesiredResolution(1280, 720);
-			Resolution.SetScreenResolution(1280, 720, false);
+			var resolution = new ResolutionComponent(this, graphics, new Point(1280, 720), new Point(1280, 720), false, false);
 
 			m_Messages = new ToastBuddy(this, "Fonts\\ArialBlack48", UpperRight, Resolution.TransformationMatrix, Justify.Right);
 			m_Messages.ShowTime = TimeSpan.FromSeconds(1.0);
-			//Components.Add(m_Messages);
 
 			_controller = new ControllerWrapper(PlayerIndex.One);
 			_controller.UseKeyboard = true;
@@ -99,6 +95,12 @@ namespace ToastBuddyLibExample
 					//pop up a message
 					messageDisplay.ShowFormattedMessage("Pressed {0}", Color.Yellow, i.ToString());
 				}
+			}
+
+			if (Keyboard.GetState().IsKeyDown(Keys.Space))
+			{
+				//pop up a message
+				messageDisplay.ShowMessage("Pressed Space!", Color.Yellow);
 			}
 
 			base.Update(gameTime);
