@@ -17,15 +17,15 @@ namespace ToastBuddyLibExample
 	{
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
-	
-		ToastBuddy m_Messages;
 
-		private InputState m_Input = new InputState();
-		private ControllerWrapper _controller;
+		ToastBuddy messages;
 
-		private GameClock _clock;
+		private InputState input = new InputState();
+		private ControllerWrapper controller;
 
-		FontBuddy InstructionFont;
+		private GameClock clock;
+
+		FontBuddy instructionFont;
 
 		public Game1()
 		{
@@ -33,15 +33,17 @@ namespace ToastBuddyLibExample
 			graphics.SupportedOrientations = DisplayOrientation.LandscapeLeft;
 			Content.RootDirectory = "Content";
 
-			var resolution = new ResolutionComponent(this, graphics, new Point(1280, 720), new Point(1280, 720), false, false);
+			var resolution = new ResolutionComponent(this, graphics, new Point(1280, 720), new Point(1280, 720), false, false, false);
 
-			m_Messages = new ToastBuddy(this, "Fonts\\ArialBlack48", UpperRight, Resolution.TransformationMatrix, Justify.Right);
-			m_Messages.ShowTime = TimeSpan.FromSeconds(1.0);
+			messages = new ToastBuddy(this, "Fonts\\ArialBlack48", UpperRight, Resolution.TransformationMatrix, Justify.Right);
+			//var rollingToast = messages.Toast as RollingToast;
+			//rollingToast.ShowTime = 1.0f;
+			messages.Toast = new ClearToast("Fonts\\ArialBlack48", UpperRight, Resolution.TransformationMatrix, Justify.Right);
 
-			_controller = new ControllerWrapper(PlayerIndex.One);
-			_controller.UseKeyboard = true;
-			_clock = new GameClock();
-        }
+			controller = new ControllerWrapper(0);
+			Mappings.UseKeyboard[0] = true;
+			clock = new GameClock();
+		}
 
 		public Vector2 UpperRight()
 		{
@@ -57,8 +59,8 @@ namespace ToastBuddyLibExample
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
-			InstructionFont = new FontBuddy();
-			InstructionFont.Font = Content.Load<SpriteFont>("Fonts\\ArialBlack24");
+			instructionFont = new FontBuddy();
+			instructionFont.LoadContent(Content, @"Fonts\ArialBlack24");
 		}
 
 		/// <summary>
@@ -70,7 +72,7 @@ namespace ToastBuddyLibExample
 		{
 			// For Mobile devices, this logic will close the Game when the Back button is pressed
 			if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed) ||
-			    (Keyboard.GetState().IsKeyDown(Keys.Escape)))
+				(Keyboard.GetState().IsKeyDown(Keys.Escape)))
 			{
 #if !__IOS__
 				Exit();
@@ -78,9 +80,9 @@ namespace ToastBuddyLibExample
 			}
 
 			//Update the input
-			_clock.Update(gameTime);
-            m_Input.Update();
-			_controller.Update(m_Input);
+			clock.Update(gameTime);
+			input.Update();
+			controller.Update(input);
 
 			//Get the toast message component
 			IServiceProvider services = Services;
@@ -90,7 +92,7 @@ namespace ToastBuddyLibExample
 			for (EKeystroke i = 0; i < EKeystroke.Neutral; i++)
 			{
 				//if this button state changed, pop up a message
-				if (_controller.CheckKeystroke(i))
+				if (controller.CheckKeystroke(i))
 				{
 					//pop up a message
 					messageDisplay.ShowFormattedMessage("Pressed {0}", Color.Yellow, i.ToString());
@@ -101,6 +103,12 @@ namespace ToastBuddyLibExample
 			{
 				//pop up a message
 				messageDisplay.ShowMessage("Pressed Space!", Color.Yellow);
+
+				var toast = messages.Toast as ClearToast;
+				if (null != toast)
+				{
+					toast.ClearMessages();
+				}
 			}
 
 			base.Update(gameTime);
@@ -121,13 +129,13 @@ namespace ToastBuddyLibExample
 			spriteBatch.Begin();
 
 			//TODO: Add your drawing code here
-			InstructionFont.Write("Press any direction on the controller to pop up messages",
-			                      new Vector2(Resolution.TitleSafeArea.Left, Resolution.TitleSafeArea.Top),
-			                      Justify.Left,
-			                      0.75f,
-			                      Color.White,
-			                      spriteBatch,
-								  _clock);
+			instructionFont.Write("Press any direction on the controller to pop up messages",
+								  new Vector2(Resolution.TitleSafeArea.Left, Resolution.TitleSafeArea.Top),
+								  Justify.Left,
+								  0.75f,
+								  Color.White,
+								  spriteBatch,
+								  clock);
 
 			spriteBatch.End();
 
