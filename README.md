@@ -1,4 +1,5 @@
-ToastBuddyLibExample
+Deprecated
 ====================
 
-An example program to show how the ToastBuddyLib works
+This example has moved:
+https://github.com/dmanning23/ToastBuddyLib/tree/master/Example
